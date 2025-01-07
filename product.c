@@ -10,7 +10,33 @@
 const char* typeTilte[NofTypes] = { "Shelf", "Frozen", "Fridge", "FruitVegtable" };
 const char* typeAbr[NofTypes] = { "SH", "FZ", "FR", "FV" };
 
-getNameFromUser(char* name)
+void initProduct(Product* p)
+{
+	getNameFromUser(p->name);
+	p->type = getTypeFromUser();
+	p->barcode[0] = typeAbr[p->type][0];
+	p->barcode[1] = typeAbr[p->type][1];
+	srand((unsigned)time(NULL));
+	for (int i = 2; i < BARCODE_LEN; i++)
+	{
+		p->barcode[i] = rand() % 10 + '0';
+	}
+	p->price = getPriceFromUser();
+	p->amount = getAmountFromUser();
+
+	Date* d = (Date*)malloc(sizeof(d));
+	initDate(d);
+	p->expDate = d;
+}
+
+
+void printProduct(const Product* p)
+{
+	printf("\nProduct name: %s\nBarcode: %s\nType: %s\nPrice: %.2f\nAmount in stock: %d\nExpiration date: ", p->name, p->barcode, typeTilte[p->type], p->price, p->amount);
+	printDate(p->expDate);
+}
+
+void getNameFromUser(char* name)
 {
 	do
 	{
@@ -68,28 +94,4 @@ int getAmountFromUser()
 	return amount;
 }
 
-void initProduct(Product* p)
-{
-	getNameFromUser(p->name);
-	p->type = getTypeFromUser();
-	p->barcode[0] = typeAbr[p->type][0];
-	p->barcode[1] = typeAbr[p->type][1];
-	srand((unsigned)time(NULL));
-	for (int i = 2; i < BARCODE_LEN; i++)
-	{
-		p->barcode[i] = rand() % 10 + '0';
-	}
-	p->price = getPriceFromUser();
-	p->amount = getAmountFromUser();
-
-	Date* d = (Date*)malloc(sizeof(d));
-	initDate(d);
-	p->expDate = d;
-}
-
-void printProduct(const Product* p)
-{
-	printf("\nProduct name: %s\nBarcode: %s\nType: %s\nPrice: %.2f\nAmount in stock: %d\nExpiration date: ", p->name, p->barcode, typeTilte[p->type], p->price, p->amount);
-	printDate(p->expDate);
-}
 

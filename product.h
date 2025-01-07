@@ -7,6 +7,7 @@
 
 typedef enum { SH, FZ, FR, FV, NofTypes } Type;
 const char* typeTilte[NofTypes];
+const char* typeAbr[NofTypes];
 
 typedef struct
 {
