@@ -36,6 +36,9 @@
     <ClCompile Include="product.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="superMarket.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="customer.h">
@@ -54,6 +57,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="product.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="superMarket.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
