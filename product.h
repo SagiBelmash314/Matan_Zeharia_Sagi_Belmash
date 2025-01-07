@@ -19,6 +19,6 @@ typedef struct
 	Date* expDate;
 } Product;
 
-void initProduct(Product* p);
-
-void printProduct(const Product* p);
+int initProduct(Product* pP);
+void printProduct(const Product* pP);
+void freeProduct(Product* pP);

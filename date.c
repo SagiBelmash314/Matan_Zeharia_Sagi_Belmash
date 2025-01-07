@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include "date.h"
 #include "general.h"
-#define MAX_LEN 8
+#define DATE_LEN 8
 
 // Translates the string form of date to day, month and year in int format
 void dateStrToInt(const char* date, int* day, int* month, int* year)
@@ -39,12 +39,12 @@ int checkDateValidity(const int day, const int month, const int year)
 
 int checkInputValidity(const char* date)
 {
-	if (strlen(date) < MAX_LEN)
+	if (strlen(date) < DATE_LEN)
 	{
 		printf("\nInput is too short\n\n");
 		return 0;
 	}
-	for (int i = 0; i < MAX_LEN; i++)
+	for (int i = 0; i < DATE_LEN; i++)
 	{
 		if (date[i] - '0' < 0 || date[i] - '0' > 9)
 		{
@@ -57,12 +57,12 @@ int checkInputValidity(const char* date)
 
 void initDate(Date* d)
 {
-	int day, month, year;
-	char temp[MAX_LEN + 1] = { 0 };
+	int day = 0, month = 0, year = 0;
+	char temp[DATE_LEN + 1] = { 0 };
 	do
 	{
 		puts("Enter the desired date by the the format ddmmyyyy (the year should be between 2024-2030):");
-		fgets(temp, MAX_LEN + 1, stdin);
+		fgets(temp, DATE_LEN + 1, stdin);
 		dateStrToInt(temp, &day, &month, &year);
 		clearBuffer(temp);
 	} while (!checkInputValidity(temp) || !checkDateValidity(day, month, year));
@@ -73,5 +73,5 @@ void initDate(Date* d)
 
 void printDate(const Date* d)
 {
-	printf("%d/%d/%d", d->day, d->month, d->year);
+	printf("%d/%d/%d\n", d->day, d->month, d->year);
 }
