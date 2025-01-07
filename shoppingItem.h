@@ -7,5 +7,5 @@ typedef struct {
 	int amount;
 } ShoppingItem;
 
-int calculatePrice(const ShoppingItem* item);
+float calculatePrice(const ShoppingItem* item);
 void initItem(Product* p, ShoppingItem* item);

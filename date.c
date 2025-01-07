@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <math.h>
+#include <string.h>
+#include <stdlib.h>
 #include "date.h"
 #include "general.h"
 #define MAX_LEN 8
@@ -11,7 +13,7 @@ void dateStrToInt(const char* date, int* day, int* month, int* year)
 	*month = (date[2] - '0') * 10 + date[3] - '0';
 	*year = 0;
 	for (int i = 0; i < 4; i++)
-		*year += (date[i + 4] - '0') * pow(10, 3 - i);
+		*year += (date[i + 4] - '0') * (int)pow(10, 3 - i);
 }
 
 int checkDateValidity(const int day, const int month, const int year)
@@ -29,7 +31,7 @@ int checkDateValidity(const int day, const int month, const int year)
 	}
 	if (day < 1 || day > daysInMonth[month - 1])
 	{
-		printf("\Day in the chosen month should be between 1-%d\n\n", daysInMonth[month - 1]);
+		printf("\nDay in the chosen month should be between 1-%d\n\n", daysInMonth[month - 1]);
 		return 0;
 	}
 	return 1;
@@ -57,7 +59,6 @@ void initDate(Date* d)
 {
 	int day, month, year;
 	char temp[MAX_LEN + 1] = { 0 };
-	char c;
 	do
 	{
 		puts("Enter the desired date by the the format ddmmyyyy (the year should be between 2024-2030):");

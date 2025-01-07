@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 void* safeRealloc(void* base, size_t newByteCount) {
 	void* temp = realloc(base, newByteCount);

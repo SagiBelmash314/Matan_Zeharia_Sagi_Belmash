@@ -1,11 +1,11 @@
 #pragma once
-#include "product.h"
+#include "shoppingItem.h"
 
 typedef struct {
-	char* barcode[BARCODE_LEN];
-	float price;
-	int amount;
-} ShoppingItem;
+	ShoppingItem** itemList;
+	int totalAmount;
+} ShoppingCart;
 
-int calculatePrice(const ShoppingItem* item);
-void initItem(Product* p, ShoppingItem* item);
+float calculateTotal(const ShoppingCart* cart);
+int addItem(ShoppingItem** item, ShoppingCart* cart);
+void initCart(ShoppingCart* cart);
