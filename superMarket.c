@@ -102,7 +102,7 @@ Customer* getCustomerForPayment(const Customer* customerList, const int custAmou
 		puts("Customer doesn't exist");
 		return NULL;
 	}
-	if (customerList[index].cart->totalAmount)
+	if (customerList[index].cart->amount)
 	{
 		puts("Customer's cart is empty");
 		return NULL;

@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include "ShoppingCart.h"
 #include "general.h"
-#include "general.h"
 
 void initCart(ShoppingCart* cart) {
 	cart->itemList = malloc(sizeof(ShoppingItem*));
@@ -10,17 +9,17 @@ void initCart(ShoppingCart* cart) {
 }
 
 int addItem(ShoppingItem** item, ShoppingCart* cart) {
-	cart->totalAmount += 1;
-	cart->itemList = (ShoppingItem**)malloc(cart->totalAmount * (sizeof(ShoppingItem*)));
+	cart->amount += 1;
+	cart->itemList = (ShoppingItem**)malloc(cart->amount * (sizeof(ShoppingItem*)));
 	if (!cart->itemList)
 		return 0;
-	cart->itemList[cart->totalAmount - 1] = *item;
+	cart->itemList[cart->amount - 1] = *item;
 	return 1;
 }
 
 float calculateTotal(const ShoppingCart* cart) {
 	float total = 0;
-	for (int i = 0; i < cart->totalAmount; i++)
+	for (int i = 0; i < cart->amount; i++)
 		total += calculatePrice(cart->itemList[i]);
 	return total;
 }

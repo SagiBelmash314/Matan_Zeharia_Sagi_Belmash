@@ -5,7 +5,7 @@
 #include <string.h>
 
 
-void initCustomer(customer* c) {
+int initCustomer(Customer* c) {
 	printf("please enter yoyr ID number: ");
 	scanf("%s", c->id);
 	char firstName[MAX_NAME_LEN];
