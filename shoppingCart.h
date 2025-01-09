@@ -1,8 +1,10 @@
 #pragma once
+#include "product.h"
 
 #include "ShoppingItem.h"
 
 typedef struct {
+	char* barcode[BARCODE_LEN];
 	float price;
 	int amount;
 	ShoppingItem** itemList;
