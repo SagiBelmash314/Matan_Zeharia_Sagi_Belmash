@@ -8,4 +8,4 @@ typedef struct {
 
 void initDate(Date* date);
 
-void printDate(const Date* date);
+void printDate(const Date date);

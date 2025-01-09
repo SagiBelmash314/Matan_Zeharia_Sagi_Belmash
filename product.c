@@ -4,14 +4,13 @@
 #include <time.h>
 #include <string.h>
 #include "general.h"
-#include "date.h"
 #include "product.h"
 
 
-const char* typeTitle[NofTypes] = { "Shelf", "Frozen", "Fridge", "FruitVegtable" };
+const char* typeTilte[NofTypes] = { "Shelf", "Frozen", "Fridge", "FruitVegtable" };
 const char* typeAbr[NofTypes] = { "SH", "FZ", "FR", "FV" };
 
-getNameFromUser(char* name)
+void getProductNameFromUser(char* name)
 {
 	do
 	{
@@ -22,7 +21,6 @@ getNameFromUser(char* name)
 			if (name[i] == '\n')
 				name[i] = '\0';
 	} while (!strlen(name));
-
 }
 
 Type getTypeFromUser()
@@ -31,7 +29,7 @@ Type getTypeFromUser()
 	do {
 		puts("Please enter one of the following types:");
 		for (int i = 0; i < NofTypes; i++)
-			printf("%d for %s\n", i, typeTitle[i]);
+			printf("%d for %s\n", i, typeTilte[i]);
 		scanf("%d", &t);
 		getchar();
 	} while (t < 0 || t >= NofTypes);
@@ -54,6 +52,17 @@ float getPriceFromUser()
 	return price;
 }
 
+void createBarcode(Product* pP)
+{
+	pP->barcode[0] = typeAbr[pP->type][0];
+	pP->barcode[1] = typeAbr[pP->type][1];
+	srand((unsigned)time(NULL));
+	for (int i = 2; i < BARCODE_LEN; i++)
+	{
+		pP->barcode[i] = rand() % 10 + '0';
+	}
+}
+
 int getAmountFromUser()
 {
 	int amount;
@@ -69,28 +78,24 @@ int getAmountFromUser()
 	return amount;
 }
 
-void initProduct(Product* p)
-{
-	getNameFromUser(p->name);
-	p->type = getTypeFromUser();
-	p->barcode[0] = typeAbr[p->type][0];
-	p->barcode[1] = typeAbr[p->type][1];
-	for (int i = 2; i < BARCODE_LEN; i++)
-	{
-		srand(time(NULL));
-		p->barcode[i] = rand() % 10 + '0';
-	}
-	p->price = getPriceFromUser();
-	p->amount = getAmountFromUser();
 
-	Date* d = (Date*)malloc(sizeof(d));
-	initDate(d);
-	p->expDate = d;
+
+int initProduct(Product* pP)
+{
+	getProductNameFromUser(pP->name);
+	pP->type = getTypeFromUser();
+	createBarcode(pP);
+	pP->price = getPriceFromUser();
+	pP->amount = getAmountFromUser();
+	Date d;
+	initDate(&d);
+	pP->expDate = d;
+	return 1;
 }
 
-void printProduct(const Product* p)
-{
-	printf("\nProduct name: %s\nBarcode: %s\nType: %s\nPrice: %.2f\nAmount in stock: %d\nExpiration date: ", p->name, p->barcode, typeTitle[p->type], p->price, p->amount);
-	printDate(p->expDate);
-}
 
+void printProduct(const Product* pP)
+{
+	printf("\nProduct name: %s\nBarcode: %s\nType: %s\nPrice: %.2f\nAmount in stock: %d\nExpiration date: ", pP->name, pP->barcode, typeTilte[pP->type], pP->price, pP->amount);
+	printDate(pP->expDate);
+}

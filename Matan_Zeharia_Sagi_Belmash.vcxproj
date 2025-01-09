@@ -102,7 +102,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <DisableSpecificWarnings>6031</DisableSpecificWarnings>
     </ClCompile>
@@ -136,6 +136,7 @@
     <ClCompile Include="product.c" />
     <ClCompile Include="shoppingCart.c" />
     <ClCompile Include="shoppingItem.c" />
+    <ClCompile Include="superMarket.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="customer.h" />
@@ -144,6 +145,7 @@
     <ClInclude Include="product.h" />
     <ClInclude Include="shoppingCart.h" />
     <ClInclude Include="shoppingItem.h" />
+    <ClInclude Include="superMarket.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

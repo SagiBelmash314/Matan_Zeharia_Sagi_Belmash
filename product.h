@@ -6,7 +6,8 @@
 
 
 typedef enum { SH, FZ, FR, FV, NofTypes } Type;
-const char* typeTitle[NofTypes];
+const char* typeTilte[NofTypes];
+const char* typeAbr[NofTypes];
 
 typedef struct
 {
@@ -15,9 +16,9 @@ typedef struct
 	Type type;
 	float price;
 	int amount;
-	Date* expDate;
+	Date expDate;
 } Product;
 
-void initProduct(Product* p);
-
-void printProduct(const Product* p);
+int initProduct(Product* pP);
+void printProduct(const Product* pP);
+Type getTypeFromUser();
