@@ -14,24 +14,24 @@ int initSuperMarket(SuperMarket* pSM)
 {
 	pSM->custAmount = 0;
 	pSM->prodAmount = 0;
-	pSM->customers = NULL;
-	pSM->products = NULL;
+	pSM->customerList = NULL;
+	pSM->productList = NULL;
 	return getSMNameFromUser(pSM) ? 1 : 0;
 }
 
 void printSuperMarket(const SuperMarket* pSM)
 {
-	printf("\nSuper Market's name: %s\nNumber of products: %d\nNumber of customers: %d\n----------\n", pSM->name, pSM->prodAmount, pSM->custAmount);
+	printf("\nSuper Market's name: %s\nNumber of productList: %d\nNumber of customerList: %d\n----------\n", pSM->name, pSM->prodAmount, pSM->custAmount);
 	puts("Product list:");
 	for (int i = 0; i < pSM->prodAmount; i++)
 	{
-		printProduct(pSM->products[i]);
+		printProduct(pSM->productList[i]);
 		printf("\n");
 	}
 	puts("Customers List:");
 	for (int i = 0; i < pSM->custAmount; i++)
 	{
-		//printCustomer(pSM->customers[i]);
+		//printCustomer(pSM->customerList[i]);
 		printf("\n");
 	}
 }
@@ -39,7 +39,7 @@ void printSuperMarket(const SuperMarket* pSM)
 int getProductIndex(const SuperMarket* pSM, const Product* pP)
 {
 	for (int i = 0; i < pSM->prodAmount; i++)
-		if (!strcmp(pSM->products[i]->name, pP->name))
+		if (!strcmp(pSM->productList[i]->name, pP->name))
 			return i;
 	return -1;
 }
@@ -47,8 +47,8 @@ int getProductIndex(const SuperMarket* pSM, const Product* pP)
 void increaseProductAmount(SuperMarket* pSM, const Product* pP)
 {
 	int i = 0;
-	while (strcmp(pSM->products[i]->name, pP->name)) i++;
-	pSM->products[i]->amount += pP->amount;
+	while (strcmp(pSM->productList[i]->name, pP->name)) i++;
+	pSM->productList[i]->amount += pP->amount;
 }
 
 int addProduct(SuperMarket* pSM)
@@ -62,10 +62,10 @@ int addProduct(SuperMarket* pSM)
 		increaseProductAmount(pSM, pP);
 	else
 	{
-		pSM->products = (Product**)safeRealloc(pSM->products, sizeof(Product*) * ++pSM->prodAmount);
-		if (!pSM->products)
+		pSM->productList = (Product**)safeRealloc(pSM->productList, sizeof(Product*) * ++pSM->prodAmount);
+		if (!pSM->productList)
 			return 0;
-		pSM->products[pSM->prodAmount - 1] = pP;
+		pSM->productList[pSM->prodAmount - 1] = pP;
 	}
 	return 1;
 }
@@ -75,15 +75,15 @@ int addCustomer(SuperMarket* pSM)
 	Customer c;
 	if (!initCustomer(&c))
 		return 0;
-	if (findCustomerById(pSM->customers, c.id) == -1)
+	if (findCustomerById(pSM->customerList, c.id) == -1)
 	{
 		puts("Customer already exists");
 		return 1;
 	}
-	pSM->customers = (Customer*)safeRealloc(pSM->customers, sizeof(Customer) * ++pSM->custAmount);
-	if (!pSM->customers)
+	pSM->customerList = (Customer*)safeRealloc(pSM->customerList, sizeof(Customer) * ++pSM->custAmount);
+	if (!pSM->customerList)
 		return 0;
-	pSM->customers[pSM->custAmount - 1] = c;
+	pSM->customerList[pSM->custAmount - 1] = c;
 	return 1;
 }
 
@@ -94,47 +94,57 @@ int buy(SuperMarket* pSM)
 
 }
 
-int ableToPurchase(const Customer* c)
+Customer* getCustomerForPayment(const Customer* customerList, const int custAmount, const char* input)
 {
-
-}
-
-int purchase(SuperMarket* pSM)
-{
-	int input = getStrFromUser("Enter customer's id or name:");
-	if (!input)
-		return 0;
-	int index = max(findCustomerById(pSM->customers, pSM->custAmount, input), findCustomerByName(pSM->customers, pSM->custAmount, input));
+	int index = max(findCustomerById(customerList, custAmount, input), findCustomerByName(customerList,custAmount, input));
 	if (index == -1)
 	{
 		puts("Customer doesn't exist");
-		return 1;
+		return NULL;
 	}
-	Customer c = pSM->customers[index];
-	if (!c.cart->totalAmount)
+	if (customerList[index].cart->totalAmount)
 	{
 		puts("Customer's cart is empty");
-		return 1;
+		return NULL;
 	}
-
-	printf("Total price is: %.2f", calculateTotal(c.cart));
-	return 1;
+	return customerList + index;
 }
 
-int cancel(SuperMarket* pSM)
+int payment(SuperMarket* pSM)
+{
+	
+}
+
+int cancelPurchase(SuperMarket* pSM)
 {
 
 }
 
-int manageCart
+int manageCart(SuperMarket* pSM)
+{
+	char* input = getStrFromUser("Enter customer's id or name:");
+	if (!input)
+		return 0;
+	Customer* pC = getCustomerForPayment(pSM->customerList, pSM->custAmount, input);
+	if (!pC)
+		return 1;
+	// printCart(pC->c);
+	printf("Total price is: %.2f", calculateTotal(pC->cart));
+	int action;
+	do
+	{
+
+	} while (action != 1 && action != 2);
+	return 1;
+}
 
 void printProductsByType(const SuperMarket* pSM)
 {
 	Type t = getTypeFromUser();
 	for (int i = 0; i < pSM->prodAmount; i++)
-		if (pSM->products[i]->type == t)
+		if (pSM->productList[i]->type == t)
 		{
-			printProduct(pSM->products[i]);
+			printProduct(pSM->productList[i]);
 			printf("\n");
 		}
 }
@@ -144,13 +154,13 @@ void freeSuperMarket(SuperMarket* pSM)
 	/*
 	for (int i = 0; i < pSM->custAmount; i++)
 	{
-		freeCustomer(pSM->customers + i);
-		free(pSM->customers + i);
+		freeCustomer(pSM->customerList + i);
+		free(pSM->customerList + i);
 	}
 	*/
 	for (int i = 0; i < pSM->prodAmount; i++)
-		free(pSM->products[i]);
-	free(pSM->products);
-	free(pSM->customers);
+		free(pSM->productList[i]);
+	free(pSM->productList);
+	free(pSM->customerList);
 	free(pSM->name);
 }

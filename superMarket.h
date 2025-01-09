@@ -7,9 +7,9 @@
 typedef struct 
 {
 	char* name;
-	Customer* customers;
+	Customer* customerList;
 	int custAmount;
-	Product** products;
+	Product** productList;
 	int prodAmount;
 } SuperMarket;
 
