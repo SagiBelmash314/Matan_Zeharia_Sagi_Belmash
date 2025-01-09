@@ -110,12 +110,12 @@ Customer* getCustomerForPayment(const Customer* customerList, const int custAmou
 	return customerList + index;
 }
 
-int payment(SuperMarket* pSM)
+int makePurchase(SuperMarket* pSM)
 {
 	
 }
 
-int cancelPurchase(SuperMarket* pSM)
+int cancelPurchase(Customer* pSM)
 {
 
 }
@@ -133,8 +133,14 @@ int manageCart(SuperMarket* pSM)
 	int action;
 	do
 	{
-
-	} while (action != 1 && action != 2);
+		puts("\nEnter the number of the desired action\n1) Pay\n2) Cancel purchase\n");
+		scanf("%d", &action);
+	} while (action < 1 && action > 3);
+	switch (action)
+	{
+	case 1: makePurchase(pC); break;
+	case 2: cancelPurchase(pC); break;
+	}
 	return 1;
 }
 
