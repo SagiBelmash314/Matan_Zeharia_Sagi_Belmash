@@ -10,6 +10,6 @@ typedef struct {
 }customer;
 
 void initCustomer(customer* c);
-char* setName();
+char* setName(char* name, char* type);
 void freeCustomer(customer* c);
 void printCustomer(customer* c);
