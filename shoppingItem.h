@@ -5,7 +5,8 @@ typedef struct {
 	char* barcode[BARCODE_LEN];
 	float price;
 	int amount;
-} shoppingItem;
+} ShoppingItem;
 
-int calculatePrice(const shoppingItem* item);
-void initItem(Product* p, shoppingItem* item);
+int calculatePrice(const ShoppingItem* item);
+void initItem(Product* p, ShoppingItem* item);
+void printItem(Product* p);

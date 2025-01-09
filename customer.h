@@ -1,12 +1,12 @@
 #pragma once
-#include "shoppingCart.h"
+#include "ShoppingCart.h"
 #define ID_LEN 9
 #define MAX_LEN 255
 
 typedef struct {
 	char	id[ID_LEN+1];
 	char	name[MAX_LEN];
-	shoppingCart	myCart;
+	ShoppingCart*	myCart;
 }customer;
 
 void initCustomer(customer* c);
