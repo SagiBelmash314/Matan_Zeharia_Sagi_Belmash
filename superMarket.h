@@ -18,5 +18,7 @@ void	printSuperMarket(const SuperMarket* pSM);
 int		addProduct(SuperMarket* pSM);
 int		addCustomer(SuperMarket* pSM);
 int		buy(SuperMarket* pSM);
+int		purchase(SuperMarket* pSM);
+int		cancel(SuperMarket* pSM);
 void	printProductsByType(const SuperMarket* pSM);
 void	freeSuperMarket(SuperMarket* pSM);

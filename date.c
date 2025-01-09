@@ -71,7 +71,7 @@ void initDate(Date* d)
 	d->year = year;
 }
 
-void printDate(const Date* d)
+void printDate(const Date d)
 {
-	printf("%d/%d/%d\n", d->day, d->month, d->year);
+	printf("%d/%d/%d\n", d.day, d.month, d.year);
 }

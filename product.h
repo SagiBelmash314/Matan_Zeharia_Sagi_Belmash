@@ -16,9 +16,9 @@ typedef struct
 	Type type;
 	float price;
 	int amount;
-	Date* expDate;
+	Date expDate;
 } Product;
 
 int initProduct(Product* pP);
 void printProduct(const Product* pP);
-void freeProduct(Product* pP);
+Type getTypeFromUser();

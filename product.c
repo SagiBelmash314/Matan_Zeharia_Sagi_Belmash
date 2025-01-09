@@ -21,7 +21,6 @@ void getProductNameFromUser(char* name)
 			if (name[i] == '\n')
 				name[i] = '\0';
 	} while (!strlen(name));
-
 }
 
 Type getTypeFromUser()
@@ -88,11 +87,9 @@ int initProduct(Product* pP)
 	createBarcode(pP);
 	pP->price = getPriceFromUser();
 	pP->amount = getAmountFromUser();
-	Date* pD = (Date*)malloc(sizeof(Date));
-	if (!pD)
-		return 0;
-	initDate(pD);
-	pP->expDate = pD;
+	Date d;
+	initDate(&d);
+	pP->expDate = d;
 	return 1;
 }
 
@@ -101,9 +98,4 @@ void printProduct(const Product* pP)
 {
 	printf("\nProduct name: %s\nBarcode: %s\nType: %s\nPrice: %.2f\nAmount in stock: %d\nExpiration date: ", pP->name, pP->barcode, typeTilte[pP->type], pP->price, pP->amount);
 	printDate(pP->expDate);
-}
-
-void freeProduct(Product* pP)
-{
-	free(pP->expDate);
 }
