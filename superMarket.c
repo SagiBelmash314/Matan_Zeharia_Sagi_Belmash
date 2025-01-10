@@ -19,6 +19,7 @@ int initSuperMarket(SuperMarket* pSM)
 	return getSMNameFromUser(pSM) ? 1 : 0;
 }
 
+//1
 void printSuperMarket(const SuperMarket* pSM)
 {
 	printf("\nSuper Market's name: %s\nNumber of productList: %d\nNumber of customerList: %d\n----------\n", pSM->name, pSM->prodAmount, pSM->custAmount);
@@ -36,30 +37,16 @@ void printSuperMarket(const SuperMarket* pSM)
 	}
 }
 
-int getProductIndex(const SuperMarket* pSM, const Product* pP)
-{
-	for (int i = 0; i < pSM->prodAmount; i++)
-		if (!strcmp(pSM->productList[i]->name, pP->name))
-			return i;
-	return -1;
-}
-
-void increaseProductAmount(SuperMarket* pSM, const Product* pP)
-{
-	int i = 0;
-	while (strcmp(pSM->productList[i]->name, pP->name)) i++;
-	pSM->productList[i]->amount += pP->amount;
-}
-
+//2
 int addProduct(SuperMarket* pSM)
 {
 	Product* pP = (Product*)malloc(sizeof(Product));
 	if (!pP)
 		return 0;
-	initProduct(pP);
-	int index = getProductIndex(pSM, pP);
-	if (index != -1)
-		increaseProductAmount(pSM, pP);
+	initProduct(pSM->productList, pSM->prodAmount, pP);
+	Product* pExistingProduct = bsearch(pP, pSM->productList, pSM->prodAmount, sizeof(Product*), compareProductByName);
+	if (pExistingProduct)
+		pExistingProduct->amount += pP->amount;
 	else
 	{
 		pSM->productList = (Product**)safeRealloc(pSM->productList, sizeof(Product*) * ++pSM->prodAmount);
@@ -70,12 +57,13 @@ int addProduct(SuperMarket* pSM)
 	return 1;
 }
 
+//3
 int addCustomer(SuperMarket* pSM)
 {
 	Customer c;
 	if (!initCustomer(&c))
 		return 0;
-	if (findCustomerById(pSM->customerList, c.id) == -1)
+	if (getCustomerById(pSM->customerList, pSM->custAmount, c.id))
 	{
 		puts("Customer already exists");
 		return 1;
@@ -87,63 +75,121 @@ int addCustomer(SuperMarket* pSM)
 	return 1;
 }
 
+int getAmountFromUser(const SuperMarket* pSM, Product* pP, Customer* pC)
+{
+	int amount;
+	printf("There are %d %ss in stock, how many do you want?\n", pP->amount, pP->name);
+	scanf("%d", &amount);
+	if (amount > pP->amount) printf("You can't have more than %d %ss\n", pP->amount, pP->name);
+	else if (amount < 0) puts("You can't have buy less then 0");
+	else
+	{
+		pP->amount -= amount;
+		ShoppingItem item = getItemByBarcode(pSM->customerList, pSM->custAmount, pP->barcode);
+		if (!item)
+			addProducToCustomer(pC, pP);
+		else
+			item += amount;
+		return 1;
+	}
+	return 0;
+}
 
-
+//4
 int buy(SuperMarket* pSM)
 {
+	char* input = getStrFromUser("Enter customer's id:");
+	if (!input)
+		return 0;
+	Customer* pC = getCustomerById(pSM->customerList, pSM->custAmount, input);
+	if (!pC)
+	{
+		puts("Customer doesn't exist");
+		return 1;
+	}
+	for (int i = 0; i < pSM->prodAmount; i++) printProduct(pSM->productList[i]);
+	while (1)
+	{
+		free(input);
+		input = getStrFromUser("\nEnter desired product's barcode (or 'stop' to stop buying):");
+		if (!strcmp(input, "stop"))
+		{
+			free(input);
+			return 1;
+		}
+		Product* pP = getProductByBarcode(pSM->customerList, pSM->prodAmount, input);
+		if (!pP) puts("Product doesn't exist");
+		else while (!getAmountFromUser(pSM, pP, pC));
+	}
+}
 
+//5
+int printCustomerCart(SuperMarket* pSM)
+{
+	char* input = getStrFromUser("\nEnter customer's id or name:");
+	if (!input) return 0;
+	Customer* pC = getCustomerById(pSM->customerList, pSM->custAmount, input);
+	free(input);
+	if (!pC)
+	{
+		puts("Customer doesn't exist");
+		return 1;
+	}
+	if (!pC->cart->totalAmount)
+	{
+		puts("Customer's cart is empty");
+		return 1;
+	}
+	printCart(pC->cart);
+	return 1;
 }
 
 Customer* getCustomerForPayment(const Customer* customerList, const int custAmount, const char* input)
 {
-	int index = max(findCustomerById(customerList, custAmount, input), findCustomerByName(customerList,custAmount, input));
-	if (index == -1)
+	Customer* pC = getCustomerById(customerList, custAmount, input);
+	if (!pC)
 	{
-		puts("Customer doesn't exist");
-		return NULL;
+		pC = getCustomerByName(customerList, custAmount, input);
+		if (!pC)
+		{
+			puts("Customer doesn't exist");
+			return NULL;
+		}
 	}
-	if (customerList[index].cart->totalAmount)
+	if (!pC->cart->totalAmount)
 	{
 		puts("Customer's cart is empty");
 		return NULL;
 	}
-	return customerList + index;
+	return pC;
 }
 
-int makePurchase(SuperMarket* pSM)
-{
-	
-}
 
-int cancelPurchase(Customer* pSM)
-{
-
-}
-
+//6
 int manageCart(SuperMarket* pSM)
 {
-	char* input = getStrFromUser("Enter customer's id or name:");
-	if (!input)
-		return 0;
+	char* input = getStrFromUser("\nEnter customer's id or name:");
+	if (!input) return NULL;
 	Customer* pC = getCustomerForPayment(pSM->customerList, pSM->custAmount, input);
-	if (!pC)
-		return 1;
-	// printCart(pC->c);
-	printf("Total price is: %.2f", calculateTotal(pC->cart));
+	free(input);
+	if (!pC) return 1;
+	printCart(pC);
 	int action;
 	do
 	{
-		puts("\nEnter the number of the desired action\n1) Pay\n2) Cancel purchase\n");
+		puts("\nEnter the number of the desired action\n1) Complete purchase\n2) Cancel purchase\n");
 		scanf("%d", &action);
 	} while (action < 1 && action > 3);
-	switch (action)
-	{
-	case 1: makePurchase(pC); break;
-	case 2: cancelPurchase(pC); break;
-	}
+	if (action == 1) printf("Purchase of %.2f complete!", pC->cart->totalPrice);
+	else
+		for (int i = 0; i < pC->cart->itemAmount; i++)
+			getProductByBarcode(pSM->customerList, pSM->prodAmount, pC->cart->itemList[i]->barcode)->amount += pC->cart->itemList[i]->amount;
+	freeCart(pC->cart);
+	free(pC->cart);
 	return 1;
 }
 
+//7
 void printProductsByType(const SuperMarket* pSM)
 {
 	Type t = getTypeFromUser();
@@ -170,3 +216,17 @@ void freeSuperMarket(SuperMarket* pSM)
 	free(pSM->customerList);
 	free(pSM->name);
 }
+
+//8
+int quit(SuperMarket* pSM)
+{
+	for (int i = 0; i < pSM->custAmount; i++)
+		if (pSM->customerList[i].cart->itemAmount > 0)
+		{
+			printf("\n%s's cart isn't empty, please complete or cancel the purchase before quitting\n", pSM->customerList[i].name);
+			return 1;
+		}
+	freeSuperMarket(pSM);
+	return 0;
+}
+
