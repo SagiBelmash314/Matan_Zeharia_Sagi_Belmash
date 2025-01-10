@@ -27,7 +27,7 @@ Type getTypeFromUser()
 {
 	int t;
 	do {
-		puts("Please enter one of the following types:");
+		puts("\nPlease enter one of the following types:");
 		for (int i = 0; i < NofTypes; i++)
 			printf("%d for %s\n", i, typeTilte[i]);
 		scanf("%d", &t);
@@ -36,6 +36,31 @@ Type getTypeFromUser()
 	return (Type)t;
 }
 
+int compareProductByBarcode(const void* a, const void* b)
+{
+	return (strcmp((*(Product**)a)->barcode, (*(Product**)b)->barcode));
+}
+
+int compareProductByName(const void* a, const void* b)
+{
+	return (strcmp((*(Product**)a)->name, (*(Product**)b)->name));
+}
+
+Product* getProductByBarcode(const Product** productList, const int prodAmount, const char* barcode)
+{
+	Product p = { 0 };
+	strcpy(p.barcode, barcode);
+	qsort(productList, prodAmount, sizeof(Product*), compareProductByBarcode);
+	return *(Product**)bsearch(&p, productList, prodAmount, sizeof(Product*), compareProductByBarcode);
+}
+
+Product* getProductByName(const Product** productList, const int prodAmount, const char* name)
+{
+	Product p = { 0 };
+	strcpy(p.name, name);
+	qsort(productList, prodAmount, sizeof(Product*), compareProductByName);
+	return *(Product**)bsearch(&p, productList, prodAmount, sizeof(Product*), compareProductByName);
+}
 
 float getPriceFromUser()
 {
@@ -78,13 +103,15 @@ int getAmountFromUser()
 	return amount;
 }
 
-
-
-int initProduct(Product* pP)
+int initProduct(const Product** productList, const int prodAmount, Product* pP)
 {
 	getProductNameFromUser(pP->name);
 	pP->type = getTypeFromUser();
-	createBarcode(pP);
+	do
+	{
+		createBarcode(pP);
+	}
+	while (getProductByBarcode(productList, prodAmount, pP->barcode));
 	pP->price = getPriceFromUser();
 	pP->amount = getAmountFromUser();
 	Date d;

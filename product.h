@@ -19,6 +19,10 @@ typedef struct
 	Date expDate;
 } Product;
 
-int initProduct(Product* pP);
+int initProduct(const Product** productList, const int prodAmount, Product* pP);
 void printProduct(const Product* pP);
 Type getTypeFromUser();
+int compareProductByBarcode(const void* a, const void* b);
+int compareProductByName(const void* a, const void* b);
+Product* getProductByBarcode(const Product** productList, const int prodAmount, const char* barcode);
+Product* getProductByName(const Product** productList, const int prodAmount, const char* name);
