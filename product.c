@@ -27,31 +27,6 @@ int compareProductByBarcode(const void* a, const void* b)
 	return (strcmp((*(Product**)a)->barcode, (*(Product**)b)->barcode));
 }
 
-int compareProductByName(const void* a, const void* b)
-{
-	return (strcmp((*(Product**)a)->name, (*(Product**)b)->name));
-}
-
-Product* getProductByBarcode(const Product** productList, const int prodAmount, const char* barcode)
-{
-	if (!(productList)) return NULL;
-	Product p = { 0 };
-	Product* pP = &p;
-	strcpy(p.barcode, barcode);
-	qsort(productList, prodAmount, sizeof(Product*), compareProductByBarcode);
-	return (Product*)bsearch(&pP, (char*)productList, prodAmount, sizeof(Product*), compareProductByBarcode);
-}
-
-Product* getProductByName(const Product** productList, const int prodAmount, const char* name)
-{
-	if (!(productList)) return NULL;
-	Product p = { 0 };
-	Product* pP = &p;
-	strcpy(p.name, name);
-	qsort(productList, prodAmount, sizeof(Product*), compareProductByName);
-	return (Product*)bsearch(&pP, (char*)productList, prodAmount, sizeof(Product*), compareProductByName);
-}
-
 float getPriceFromUser()
 {
 	float price;
@@ -82,19 +57,9 @@ int getAmountFromUser()
 	return amount;
 }
 
-void createBarcode(Product* pP)
-{
-	pP->barcode[0] = typeAbr[pP->type][0];
-	pP->barcode[1] = typeAbr[pP->type][1];
-	srand((unsigned)time(NULL));
-	for (int i = 2; i < BARCODE_LEN; i++)
-	{
-		pP->barcode[i] = rand() % 10 + '0';
-	}
-	pP->barcode[BARCODE_LEN] = '\0';
-}
 
-int initProduct(const Product** productList, const int prodAmount, Product* pP)
+
+int initProduct(Product* pP)
 {
 	strcpy(pP->name, getStrFromUser("\nPlease enter the product's name:"));
 	pP->type = getTypeFromUser();
