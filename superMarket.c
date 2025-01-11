@@ -43,7 +43,7 @@ int addProduct(SuperMarket* pSM)
 	Product* pP = (Product*)malloc(sizeof(Product));
 	if (!pP) return 0;
 	initProduct(pSM->productList, pSM->prodAmount, pP);
-	Product* pExistingProduct = bsearch(pP, pSM->productList, pSM->prodAmount, sizeof(Product*), compareProductByName);
+	Product* pExistingProduct = getProductByName(pSM->productList, pSM->prodAmount, pP->name);
 	if (pExistingProduct)
 		pExistingProduct->amount += pP->amount;
 	else

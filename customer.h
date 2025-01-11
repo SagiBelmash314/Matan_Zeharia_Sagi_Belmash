@@ -5,13 +5,13 @@
 
 typedef struct {
 	char			id[ID_LEN + 1];
-	char			name[MAX_LEN];
+	char*			name;
 	ShoppingCart*	cart;
 }Customer;
 
-int			initCustomer(Customer* c);
-void		freeCustomer(Customer* c);
-void		printCustomer(const Customer* c);
+int			initCustomer(Customer* pC);
+void		freeCustomer(Customer* pC);
+void		printCustomer(const Customer* pC);
 int			compareCustomerById(const void* a, const void* b);
 int			compareCustomerByName(const void* a, const void* b);
 Customer*	getCustomerById(Customer* customerList, const int custAmount, const char* id);

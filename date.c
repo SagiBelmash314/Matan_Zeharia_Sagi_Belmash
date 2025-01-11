@@ -66,7 +66,6 @@ void initDate(Date* d)
 		puts("\nEnter the desired date by the the format ddmmyyyy (the year should be between 2024-2030):");
 		fgets(temp, DATE_LEN + 1, stdin);
 		dateStrToInt(temp, &day, &month, &year);
-		clearBuffer(temp);
 	} while (!checkInputValidity(temp) || !checkDateValidity(day, month, year));
 	d->day = day;
 	d->month = month;

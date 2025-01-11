@@ -39,7 +39,8 @@ Product* getProductByBarcode(const Product** productList, const int prodAmount, 
 	Product* pP = &p;
 	strcpy(p.barcode, barcode);
 	qsort(productList, prodAmount, sizeof(Product*), compareProductByBarcode);
-	return (Product*)bsearch(&pP, (char*)productList, prodAmount, sizeof(Product*), compareProductByBarcode);
+	Product** pPP = (Product**)bsearch(&pP, productList, prodAmount, sizeof(Product*), compareProductByBarcode);
+	return pPP ? *pPP : NULL;
 }
 
 Product* getProductByName(const Product** productList, const int prodAmount, const char* name)
@@ -49,7 +50,8 @@ Product* getProductByName(const Product** productList, const int prodAmount, con
 	Product* pP = &p;
 	strcpy(p.name, name);
 	qsort(productList, prodAmount, sizeof(Product*), compareProductByName);
-	return (Product*)bsearch(&pP, (char*)productList, prodAmount, sizeof(Product*), compareProductByName);
+	Product** pPP = (Product**)bsearch(&pP, productList, prodAmount, sizeof(Product*), compareProductByName);
+	return pPP ? *pPP : NULL;
 }
 
 float getPriceFromUser()
