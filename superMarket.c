@@ -102,7 +102,7 @@ Customer* getCustomerForPayment(const Customer* customerList, const int custAmou
 		puts("Customer doesn't exist");
 		return NULL;
 	}
-	if (customerList[index].cart->totalAmount)
+	if (customerList[index].cart->amount)
 	{
 		puts("Customer's cart is empty");
 		return NULL;
@@ -130,11 +130,11 @@ int manageCart(SuperMarket* pSM)
 		return 1;
 	// printCart(pC->c);
 	printf("Total price is: %.2f", calculateTotal(pC->cart));
-	int action;
+	/*int action;
 	do
 	{
 
-	} while (action != 1 && action != 2);
+	} while (action != 1 && action != 2);*/
 	return 1;
 }
 
