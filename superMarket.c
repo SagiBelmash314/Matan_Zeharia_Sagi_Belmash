@@ -130,11 +130,11 @@ int manageCart(SuperMarket* pSM)
 		return 1;
 	// printCart(pC->c);
 	printf("Total price is: %.2f", calculateTotal(pC->cart));
-	int action;
+	/*int action;
 	do
 	{
 
-	} while (action != 1 && action != 2);
+	} while (action != 1 && action != 2);*/
 	return 1;
 }
 
