@@ -14,3 +14,4 @@ void freeCustomer(Customer* c);
 void printCustomer(Customer* c);
 int compareCustomerById(const void* a, const void* b);
 int compareCustomerByName(const void* a, const void* b);
+Customer* getCustomerById(const Customer* customerList, const int custAmount, const char* id);

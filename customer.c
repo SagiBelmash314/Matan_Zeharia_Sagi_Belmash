@@ -33,3 +33,11 @@ int compareCustomerByName(const void* a, const void* b)
 {
 	return (strcmp(((Customer*)a)->name, ((Customer*)b)->name));
 }
+
+Customer* getCustomerById(const Customer* customerList, const int custAmount, const char* id)
+{
+	Customer temp = { .id = id };
+	qsort(customerList, custAmount, sizeof(Customer), compareCustomerById);
+	Customer* pC = bsearch(&temp, customerList, custAmount, sizeof(Customer), compareCustomerById);
+	return pC;
+}

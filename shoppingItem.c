@@ -23,3 +23,15 @@ void freeItem(ShoppingItem* item) {
 Product matchingProduct(ShoppingItem* item,Product* pProdList) {
 
 }
+int compareItemByBarcode(const void* a, const void* b)
+{
+	return (strcmp((*(ShoppingItem**)a)->barcode, (*(ShoppingItem**)b)->barcode));
+}
+
+ShoppingItem* getItemByBarcode(const ShoppingItem** itemList, const int itemAmount, const char* barcode)
+{
+	ShoppingItem item = { 0 };
+	strcpy(item.barcode, barcode);
+	qsort(itemList, itemAmount, sizeof(ShoppingItem*), compareItemByBarcode);
+	return *(ShoppingItem**)bsearch(&item, itemList, itemAmount, sizeof(ShoppingItem), compareItemByBarcode);
+}
