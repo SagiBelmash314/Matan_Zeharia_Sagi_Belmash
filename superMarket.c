@@ -32,7 +32,7 @@ void printSuperMarket(const SuperMarket* pSM)
 	puts("Customers List:");
 	for (int i = 0; i < pSM->custAmount; i++)
 	{
-		//printCustomer(pSM->customerList[i]);
+		printCustomer(pSM->customerList + i);
 		printf("\n");
 	}
 }
@@ -41,8 +41,7 @@ void printSuperMarket(const SuperMarket* pSM)
 int addProduct(SuperMarket* pSM)
 {
 	Product* pP = (Product*)malloc(sizeof(Product));
-	if (!pP)
-		return 0;
+	if (!pP) return 0;
 	initProduct(pSM->productList, pSM->prodAmount, pP);
 	Product* pExistingProduct = bsearch(pP, pSM->productList, pSM->prodAmount, sizeof(Product*), compareProductByName);
 	if (pExistingProduct)
@@ -75,21 +74,25 @@ int addCustomer(SuperMarket* pSM)
 	return 1;
 }
 
-int getAmountFromUser(const SuperMarket* pSM, Product* pP, Customer* pC)
+int getItemAmountFromUser(const SuperMarket* pSM, Product* pP, Customer* pC)
 {
 	int amount;
 	printf("There are %d %ss in stock, how many do you want?\n", pP->amount, pP->name);
 	scanf("%d", &amount);
+	getchar();
 	if (amount > pP->amount) printf("You can't have more than %d %ss\n", pP->amount, pP->name);
 	else if (amount < 0) puts("You can't have buy less then 0");
 	else
 	{
 		pP->amount -= amount;
-		ShoppingItem item = getItemByBarcode(pSM->customerList, pSM->custAmount, pP->barcode);
-		if (!item)
-			addProducToCustomer(pC, pP);
+		ShoppingItem* pSI = getItemByBarcode(pC->cart->itemList, pC->cart->amount, pP->barcode);
+		if (!pSI)
+		{	
+			initItem(pP, amount, pSI);
+			addItemToCart(pSI, pC->cart);
+		}
 		else
-			item += amount;
+			pSI->amountInCart += amount;
 		return 1;
 	}
 	return 0;
@@ -117,9 +120,9 @@ int buy(SuperMarket* pSM)
 			free(input);
 			return 1;
 		}
-		Product* pP = getProductByBarcode(pSM->customerList, pSM->prodAmount, input);
+		Product* pP = getProductByBarcode(pSM->productList, pSM->prodAmount, input);
 		if (!pP) puts("Product doesn't exist");
-		else while (!getAmountFromUser(pSM, pP, pC));
+		else while (!getItemAmountFromUser(pSM, pP, pC));
 	}
 }
 
@@ -135,7 +138,7 @@ int printCustomerCart(SuperMarket* pSM)
 		puts("Customer doesn't exist");
 		return 1;
 	}
-	if (!pC->cart->totalAmount)
+	if (!pC->cart->amount)
 	{
 		puts("Customer's cart is empty");
 		return 1;
@@ -144,7 +147,7 @@ int printCustomerCart(SuperMarket* pSM)
 	return 1;
 }
 
-Customer* getCustomerForPayment(const Customer* customerList, const int custAmount, const char* input)
+Customer* getCustomerForPayment(Customer* customerList, const int custAmount, const char* input)
 {
 	Customer* pC = getCustomerById(customerList, custAmount, input);
 	if (!pC)
@@ -156,7 +159,7 @@ Customer* getCustomerForPayment(const Customer* customerList, const int custAmou
 			return NULL;
 		}
 	}
-	if (!pC->cart->totalAmount)
+	if (!pC->cart->amount)
 	{
 		puts("Customer's cart is empty");
 		return NULL;
@@ -169,17 +172,23 @@ Customer* getCustomerForPayment(const Customer* customerList, const int custAmou
 int manageCart(SuperMarket* pSM)
 {
 	char* input = getStrFromUser("\nEnter customer's id or name:");
-	if (!input) return NULL;
+	if (!input) return 0;
 	Customer* pC = getCustomerForPayment(pSM->customerList, pSM->custAmount, input);
-	if (!pC)
-		return 1;
-	// printCart(pC->c);
-	printf("Total price is: %.2f", calculateTotal(pC->cart));
+	free(input);
+	if (!pC) return 1;
+	printCart(pC->cart);
 	int action;
 	do
 	{
-
-	} while (action != 1 && action != 2);
+		puts("\nEnter the number of the desired action\n1) Complete purchase\n2) Cancel purchase\n");
+		scanf("%d", &action);
+		getchar();
+	} while (action < 1 && action > 2);
+	if (action == 1) printf("Purchase of %.2f complete!", pC->cart->price);
+	else
+		for (int i = 0; i < pC->cart->amount; i++)
+			getProductByBarcode(pSM->productList, pSM->prodAmount, pC->cart->itemList[i]->barcode)->amount += pC->cart->itemList[i]->amountInCart;
+	freeCart(pC->cart);
 	return 1;
 }
 
@@ -215,7 +224,7 @@ void freeSuperMarket(SuperMarket* pSM)
 int quit(SuperMarket* pSM)
 {
 	for (int i = 0; i < pSM->custAmount; i++)
-		if (pSM->customerList[i].cart->itemAmount > 0)
+		if (pSM->customerList[i].cart->amount > 0)
 		{
 			printf("\n%s's cart isn't empty, please complete or cancel the purchase before quitting\n", pSM->customerList[i].name);
 			return 1;

@@ -3,37 +3,33 @@
 #include "ShoppingCart.h"
 #include "general.h"
 
-void initCart(ShoppingCart* cart) {
-	cart->itemList = malloc(sizeof(ShoppingItem*));
-	cart->amount = 0;
-	cart->price = 0;
+void initCart(ShoppingCart* pCart) {
+	pCart->itemList = NULL;
+	pCart->amount = 0;
+	pCart->price = 0;
 }
 
-int addItem(ShoppingItem** item, ShoppingCart* cart) {
-	cart->amount += 1;
-	cart->itemList = (ShoppingItem**)safeRealloc(cart->itemList,cart->amount * (sizeof(ShoppingItem*)));
-	if (!cart->itemList)
+int addItemToCart(ShoppingItem* pSI, ShoppingCart* pCart) {
+	pCart->amount += 1;
+	pCart->itemList = (ShoppingItem**)safeRealloc(pCart->itemList,pCart->amount * (sizeof(ShoppingItem*)));
+	if (!pCart->itemList)
 		return 0;
-	cart->itemList[cart->amount - 1] = *item;
+	pCart->itemList[pCart->amount - 1] = pSI;
 	return 1;
 }
-
-float calculateTotal(const ShoppingCart* cart) {
+float calculateTotal(const ShoppingCart* pCart) {
 	float total = 0;
-	for (int i = 0; i < cart->amount; i++)
-		total += calculatePrice(cart->itemList[i]);
+	for (int i = 0; i < pCart->amount; i++)
+		total += calculatePrice(pCart->itemList[i]);
 	return total;
 }
 
-void printCart(ShoppingCart* s) {
-	printf("this cart has %d items:",s->amount);
+void printCart(const ShoppingCart* pCart) {
+	printf("This pCart has %d items:", pCart->amount);
 
-	for (int i = 0; i < s->amount; i++) 
-	{
-		Product currProduct = matchingProduct(s->itemList[i]);
-		printItem(s->itemList[i]);
-	}
-	printf("the total sum is:%f", s->price);
+	for (int i = 0; i < pCart->amount; i++)
+		printItem(pCart->itemList[i]);
+	printf("The total sum is: %.2f", pCart->price);
 }
 
 void freeCart(ShoppingCart* pCart) {

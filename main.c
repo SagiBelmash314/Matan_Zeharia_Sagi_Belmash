@@ -6,7 +6,7 @@
 
 void printMenu()
 {
-	puts("Enter the number of the desired action:");
+	puts("\n\nEnter the number of the desired action:");
 	puts("1) Print supermarket details");
 	puts("2) Add product");
 	puts("3) Add customer");
@@ -41,6 +41,7 @@ void run(SuperMarket* pSM)
 	{
 		printMenu();
 		scanf("%d", &input);
+		clearBuffer();
 		res = invokeAction(pSM, input);
 		if (!res && input != 8)
 		{

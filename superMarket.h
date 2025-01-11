@@ -1,9 +1,6 @@
 #pragma once
 #include "customer.h"
 
-// Delete
-#include "product.h"
-
 typedef struct 
 {
 	char*		name;

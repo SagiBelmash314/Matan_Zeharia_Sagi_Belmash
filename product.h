@@ -12,7 +12,7 @@ const char* typeAbr[NofTypes];
 typedef struct
 {
 	char name[MAX_NAME_LEN + 1];
-	char barcode[BARCODE_LEN];
+	char barcode[BARCODE_LEN + 1];
 	Type type;
 	float price;
 	int amount;

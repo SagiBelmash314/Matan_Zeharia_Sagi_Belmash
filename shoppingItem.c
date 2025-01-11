@@ -4,15 +4,13 @@
 #include <stdio.h>
 #include <string.h>
 
-void initItem(Product* p, ShoppingItem* item) {
-	puts("how much of this item? ");
-	scanf("%d", &item->amountInCart);
-	strcpy(item->barcode, p->barcode);
-	item->price = p->price;
+void initItem(const Product* pP, const int amount, ShoppingItem* pSI) {
+	pSI->amountInCart = amount;
+	strcpy(pSI->barcode, pP->barcode);
+	pSI->price = pP->price;
 }
-void printItem(Product* p) {
-	printf("%s: price:%f, amount:%d, total:%f, barcode:%s, expiration date:", p->name, p->price, p->amount, (float)p->price * p->amount, p->barcode);
-	printDate(p->expDate);
+void printItem(const ShoppingItem* pSI) {
+	printf("Item barcode: %s, price: %.2f, %d in cart",pSI->barcode,pSI->price,pSI->amountInCart);
 }
 float calculatePrice(const ShoppingItem* item) {
 	return item->amountInCart * item->price;
@@ -20,14 +18,10 @@ float calculatePrice(const ShoppingItem* item) {
 void freeItem(ShoppingItem* item) {
 	free(item);
 }
-Product matchingProduct(ShoppingItem* item,Product* pProdList) {
-
-}
 int compareItemByBarcode(const void* a, const void* b)
 {
 	return (strcmp((*(ShoppingItem**)a)->barcode, (*(ShoppingItem**)b)->barcode));
 }
-
 ShoppingItem* getItemByBarcode(const ShoppingItem** itemList, const int itemAmount, const char* barcode)
 {
 	ShoppingItem item = { 0 };

@@ -11,12 +11,18 @@ void* safeRealloc(void* base, size_t newByteCount) {
 }
 
 
-void clearBuffer(const char* str)
+void clearBuffer()
 {
-	int c;
-	if (strchr(str, '\n') == NULL) {
-		while ((c = getchar()) != '\n' && c != EOF);
-	}
+	char c;
+	while ((c = getchar()) != '\n' && c != EOF);
+}
+
+void deleteExcessSpaces(char* str)
+{
+	while (str[0] == ' ')
+		strcpy(str, str + 1);
+	while (str[strlen(str) - 1] == ' ')
+		str[strlen(str) - 1] = '\0';
 }
 
 char* getStrFromUser(const char* msg)
@@ -28,10 +34,10 @@ char* getStrFromUser(const char* msg)
 	{
 		puts(msg);
 		fgets(temp, MAX_LEN, stdin);
-		clearBuffer(temp);
 		for (int i = 0; i < strlen(temp); i++)
 			if (temp[i] == '\n')
 				temp[i] = '\0';
+		deleteExcessSpaces(temp);
 	} while (!strlen(temp));
 	temp = (char*)safeRealloc(temp, (strlen(temp) + 1) * sizeof(char));
 	return temp ? temp : NULL;

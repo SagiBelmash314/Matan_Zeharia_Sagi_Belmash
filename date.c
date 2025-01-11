@@ -48,7 +48,7 @@ int checkInputValidity(const char* date)
 	{
 		if (date[i] - '0' < 0 || date[i] - '0' > 9)
 		{
-			printf("\nAll characters should be digits\n\n");
+			puts("\nAll characters should be digits\n");
 			return 0;
 		}
 	}
@@ -57,11 +57,13 @@ int checkInputValidity(const char* date)
 
 void initDate(Date* d)
 {
-	int day = 0, month = 0, year = 0;
+	int day = 0;
+	int month = 0;
+	int year = 0;
 	char temp[DATE_LEN + 1] = { 0 };
 	do
 	{
-		puts("Enter the desired date by the the format ddmmyyyy (the year should be between 2024-2030):");
+		puts("\nEnter the desired date by the the format ddmmyyyy (the year should be between 2024-2030):");
 		fgets(temp, DATE_LEN + 1, stdin);
 		dateStrToInt(temp, &day, &month, &year);
 		clearBuffer(temp);
