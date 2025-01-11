@@ -2,13 +2,14 @@
 #include "shoppingItem.h"
 
 typedef struct {
-	char* barcode[BARCODE_LEN];
+	ShoppingItem** itemList;
 	float price;
 	int amount;
-	ShoppingItem** itemList;
-} ShoppingCart;
+}ShoppingCart;
+void initCart(const ShoppingCart* cart);
+int addItem(ShoppingItem** item, ShoppingCart* cart);
+float calculateTotal(const ShoppingCart* cart);
+void printCart(const ShoppingCart* s);
+void freeCart(ShoppingCart* pCart);
 
-int calculatePrice(const ShoppingItem* item);
-void initItem(Product* p, ShoppingItem* item);
-void addItem(ShoppingItem** item, ShoppingCart* cart);
-void printCart(ShoppingCart* s);
+

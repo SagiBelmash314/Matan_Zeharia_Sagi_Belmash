@@ -171,21 +171,15 @@ int manageCart(SuperMarket* pSM)
 	char* input = getStrFromUser("\nEnter customer's id or name:");
 	if (!input) return NULL;
 	Customer* pC = getCustomerForPayment(pSM->customerList, pSM->custAmount, input);
-	free(input);
-	if (!pC) return 1;
-	printCart(pC);
+	if (!pC)
+		return 1;
+	// printCart(pC->c);
+	printf("Total price is: %.2f", calculateTotal(pC->cart));
 	int action;
 	do
 	{
-		puts("\nEnter the number of the desired action\n1) Complete purchase\n2) Cancel purchase\n");
-		scanf("%d", &action);
-	} while (action < 1 && action > 3);
-	if (action == 1) printf("Purchase of %.2f complete!", pC->cart->totalPrice);
-	else
-		for (int i = 0; i < pC->cart->itemAmount; i++)
-			getProductByBarcode(pSM->customerList, pSM->prodAmount, pC->cart->itemList[i]->barcode)->amount += pC->cart->itemList[i]->amount;
-	freeCart(pC->cart);
-	free(pC->cart);
+
+	} while (action != 1 && action != 2);
 	return 1;
 }
 
