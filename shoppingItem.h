@@ -7,8 +7,9 @@ typedef struct {
 	int amountInCart;
 } ShoppingItem;
 
-float calculatePrice(const ShoppingItem* item);
-void initItem(Product* p, ShoppingItem* item);
-void printItem(Product* p);
+float calculatePrice(const ShoppingItem* pSI);
+void initItem(const Product* pP, const int amount, ShoppingItem* pSI);
+void printItem(const ShoppingItem* pSI);
 void freeItem(ShoppingItem* item);
-Product matchingProduct(ShoppingItem* item);
+int compareItemByBarcode(const void* a, const void* b);
+ShoppingItem* getItemByBarcode(const ShoppingItem** itemList, const int itemAmount, const char* barcode);

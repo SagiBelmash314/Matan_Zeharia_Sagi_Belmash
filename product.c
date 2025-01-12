@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <stdbool.h>
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
@@ -10,24 +9,11 @@
 const char* typeTilte[NofTypes] = { "Shelf", "Frozen", "Fridge", "FruitVegtable" };
 const char* typeAbr[NofTypes] = { "SH", "FZ", "FR", "FV" };
 
-void getProductNameFromUser(char* name)
-{
-	do
-	{
-		puts("Please enter the product's name:");
-		fgets(name, MAX_NAME_LEN + 1, stdin);
-		clearBuffer(name);
-		for (int i = 0; i < MAX_NAME_LEN; i++)
-			if (name[i] == '\n')
-				name[i] = '\0';
-	} while (!strlen(name));
-}
-
 Type getTypeFromUser()
 {
 	int t;
 	do {
-		puts("Please enter one of the following types:");
+		puts("\nPlease enter one of the following types:");
 		for (int i = 0; i < NofTypes; i++)
 			printf("%d for %s\n", i, typeTilte[i]);
 		scanf("%d", &t);
@@ -36,20 +22,66 @@ Type getTypeFromUser()
 	return (Type)t;
 }
 
+int compareProductByBarcode(const void* a, const void* b)
+{
+	return (strcmp((*(Product**)a)->barcode, (*(Product**)b)->barcode));
+}
+
+int compareProductByName(const void* a, const void* b)
+{
+	return (strcmp((*(Product**)a)->name, (*(Product**)b)->name));
+}
+
+Product* getProductByBarcode(const Product** productList, const int prodAmount, const char* barcode)
+{
+	if (!(productList)) return NULL;
+	Product p = { 0 };
+	Product* pP = &p;
+	strcpy(p.barcode, barcode);
+	qsort(productList, prodAmount, sizeof(Product*), compareProductByBarcode);
+	Product** pPP = (Product**)bsearch(&pP, productList, prodAmount, sizeof(Product*), compareProductByBarcode);
+	return pPP ? *pPP : NULL;
+}
+
+Product* getProductByName(const Product** productList, const int prodAmount, const char* name)
+{
+	if (!(productList)) return NULL;
+	Product p = { 0 };
+	Product* pP = &p;
+	strcpy(p.name, name);
+	qsort(productList, prodAmount, sizeof(Product*), compareProductByName);
+	Product** pPP = (Product**)bsearch(&pP, productList, prodAmount, sizeof(Product*), compareProductByName);
+	return pPP ? *pPP : NULL;
+}
 
 float getPriceFromUser()
 {
 	float price;
-	while (true)
+	while (1)
 	{
-		puts("Please enter product's price:");
+		puts("\nPlease enter product's price:");
 		scanf("%f", &price);
 		getchar();
 		if (price <= 0)
-			puts("The price should be above 0\n");
+			puts("\nThe price should be above 0");
 		else break;
 	}
 	return price;
+}
+
+int getAmountFromUser()
+{
+	int amount;
+	while (1)
+	{
+		puts("\nPlease enter product's amount:");
+		scanf("%d", &amount);
+		getchar();
+		if (amount <= 0)
+			puts("The amount should be above 0\n");
+		else break;
+	}
+	return amount;
 }
 
 void createBarcode(Product* pP)
@@ -61,30 +93,17 @@ void createBarcode(Product* pP)
 	{
 		pP->barcode[i] = rand() % 10 + '0';
 	}
+	pP->barcode[BARCODE_LEN] = '\0';
 }
 
-int getAmountFromUser()
+int initProduct(const Product** productList, const int prodAmount, Product* pP)
 {
-	int amount;
-	while (true)
-	{
-		puts("Please enter amount of the product in stock:");
-		scanf("%d", &amount);
-		getchar();
-		if (amount < 0)
-			puts("The amount should be 0 or above");
-		else break;
-	}
-	return amount;
-}
-
-
-
-int initProduct(Product* pP)
-{
-	getProductNameFromUser(pP->name);
+	strcpy(pP->name, getStrFromUser("\nPlease enter the product's name:"));
 	pP->type = getTypeFromUser();
-	createBarcode(pP);
+	do
+	{
+		createBarcode(pP);
+	} while (getProductByBarcode(productList, prodAmount, pP->barcode));
 	pP->price = getPriceFromUser();
 	pP->amount = getAmountFromUser();
 	Date d;
